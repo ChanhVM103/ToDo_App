@@ -101,3 +101,4 @@ FilterPanel.propTypes = {
 };
 
 export default FilterPanel;
+     

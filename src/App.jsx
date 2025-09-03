@@ -1,8 +1,10 @@
-import { useMemo, useRef, useState } from "react";
+import { useContext, useMemo, useRef, useState } from "react";
 import "./App.css";
 import TodoItem from "./components/TodoItem";
 import Sidebar from "./components/Sidebar";
 import FilterPanel from "./components/FilterPanel";
+import CategoryList from "./components/CategoryList";
+import { AppContext } from "./components/Context/AppProvider";
 
 function App() {
   // const todoList = [
@@ -17,7 +19,7 @@ function App() {
       isImportant: true,
       isCompleted: true,
       isDeleted: false,
-      ategory: "personal",
+      category: "personal",
     },
     {
       id: "2",
@@ -25,7 +27,7 @@ function App() {
       isImportant: true,
       isCompleted: false,
       isDeleted: false,
-      ategory: "personal",
+      category: "personal",
     },
     {
       id: "3",
@@ -36,6 +38,7 @@ function App() {
       category: "travel",
     },
   ]);
+  const {selectedCategoryId, setSelectedCategoryId} = useContext(AppContext)
   console.log(todoList);
   const [showSidebar, setShowSidebar] = useState(false);
 
@@ -78,6 +81,10 @@ function App() {
       if (searchText && !todo.name.includes(searchText)) {
   return false;
 }
+   const isCategoryMatched = !selectedCategoryId || todo.category === selectedCategoryId;
+   if (!isCategoryMatched) {
+      return false;
+   }
       switch (selectedFilterId) {
         case "all":
           return true;
@@ -91,18 +98,25 @@ function App() {
           return true;
       }
     });
-  }, [todoList, selectedFilterId, searchText]);
+  }, [todoList, selectedFilterId, searchText, selectedCategoryId]);
 
   return (
     <>
       <div className="container">
-        <FilterPanel
-          selectedFilterId={selectedFilterId}
-          setSelectedFilterId={setSelectedFilterId}
-          todoList={todoList}
-          searchText={searchText}
-          setSearchText={setSearchtext}
-        />
+        <div className="left-panel">
+          <FilterPanel
+            selectedFilterId={selectedFilterId}
+            setSelectedFilterId={setSelectedFilterId}
+            todoList={todoList}
+            searchText={searchText}
+            setSearchText={setSearchtext}
+          />
+          <CategoryList
+            todoList={todoList}
+            selectedFilterId={selectedFilterId}
+            searchText={searchText}
+          />
+        </div>
         <div className="main-content">
           <div>
             <input
@@ -155,6 +169,7 @@ function App() {
               />
             )}
           </div>
+          
         </div>
       </div>
     </>

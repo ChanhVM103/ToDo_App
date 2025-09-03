@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import "./Sidebar.css";
 import PropTypes from "prop-types";
+import { CATEGORY_ITEMS } from "./Constant";
 function Sidebar(props) {
   
   const data = props.todoItem;
   const [name, setName]= useState(data.name);
   const [isImportant, setIsImportant] = useState(data.isImportant)
   const[isCompleted, setIsCompleted] = useState(data.isCompleted)
+  const[category, setCategory]= useState(data.category);
   const handleSave= ()=>{
-    const newTodo = {...data, name, isImportant, isCompleted}
+    const newTodo = {...data, name, isImportant, isCompleted, category}
      props.handleCompleteCheckboxChange(newTodo);
      props.setShowSidebar(false)
   }
@@ -52,6 +54,25 @@ function Sidebar(props) {
              onChange={()=> setIsCompleted(!isCompleted)}
           />
         </div>
+        <div className="sb-form-field">
+          <label htmlFor="sb-category">Category</label>
+          <select
+            id="sb-category"
+            value={category}
+            onChange={(e)=>{
+              setCategory(e.target.value);
+            }}
+          >
+
+            {CATEGORY_ITEMS.map((category) => {
+              return (
+                <option value={category.id} key={category.id}>
+                  {category.label}
+                </option>
+              );
+            })}
+          </select>
+        </div>
       </form>
       <div className="sb-footer">
         <button onClick={handleSave}>Save</button>
@@ -66,6 +87,7 @@ function Sidebar(props) {
       name: PropTypes.string,
       isImportant: PropTypes.bool,
       isCompleted:PropTypes.bool,
+      category:PropTypes.string,
     }),
     handleCompleteCheckboxChange: PropTypes.func
   }
